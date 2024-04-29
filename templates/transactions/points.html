@@ -1,0 +1,21 @@
+{% extends 'webapps2024/base.html' %}
+
+{% block content %}
+    <h1>Points Transfer Summary</h1>
+    {% if src_points and dst_points %}
+        <p>Transfer successful!</p>
+        <div>
+            <h2>Source User:</h2>
+            <p>Username: {{ src_points.name.username }}</p>
+            <p>Remaining Points: {{ src_points.points }}</p>
+        </div>
+        <div>
+            <h2>Destination User:</h2>
+            <p>Username: {{ dst_points.name.username }}</p>
+            <p>New Points Total: {{ dst_points.points }}</p>
+        </div>
+    {% else %}
+        <p>No points transfer information available.</p>
+    {% endif %}
+    <a href="{% url 'points_transfer' %}">Transfer More Points</a>
+{% endblock %}

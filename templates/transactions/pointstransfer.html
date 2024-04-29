@@ -1,0 +1,17 @@
+{% extends 'webapps2024/base.html' %}
+
+{% block title %}
+    Transfer Points Between Users
+{% endblock %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <h4>Transfer Points</h4>
+    <form method="post" class="form-group">
+        {% csrf_token %}
+        {{ form|crispy }}
+        
+        <button type="submit" class="btn btn-success">Transfer</button>
+    </form>
+{% endblock %}

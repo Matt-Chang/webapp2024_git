@@ -1,0 +1,126 @@
+{% load crispy_forms_tags %}  <!-- Load crispy_forms_tags at the beginning -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <title>{% block title %}Webapps2024{% endblock %}</title>
+</head>
+<body>
+
+<!-- Navbar-->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">WebApps</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="False" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarText">
+        <ul class="navbar-nav mr-auto">
+            {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home' %}">Home</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'points_transfer' %}">Transfer Points</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'create_payment_request' %}">Request Money</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'admin_dashboard' %}">admin-only dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">Welcome, {{ user.username }}</a>
+                </li>
+                
+            {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'login' %}">Login</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+{% if user.is_authenticated and current_time %}
+    <div class="container mt-3">
+
+        <p id="timestamp" style="font-size: 24px; font-weight: bold; display: inline;">Current Time: {{ current_time }}</p>
+        <!-- Button to refresh timestamp -->
+        <button onclick="refreshTimestamp()">Refresh Apache Thrift Time</button>
+
+    </div>
+{% endif %}
+
+<!-- use JavaScript to call the function refreshTimestamp()  -->
+<script type="text/javascript">
+    function refreshTimestamp() {
+        fetch('{% url "current-timestamp" %}')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('timestamp').innerText = "Current Time: " + data.current_time;
+            })
+            .catch(error => console.error('Error fetching new timestamp:', error));
+    }
+</script>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert {{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+
+<!-- show points -->
+<h5>Your Points: {{ formatted_points }}</h5>
+<h5>Transactions Sent:</h5>
+{% if transactions_sent %}
+<ul>
+    {% for transaction in transactions_sent %}
+        <li>At {{ transaction.timestamp }} Transferred {{ transaction.money_to_transfer }} {{ transaction.currency_symbol }} to {{ transaction.receiver.username }}</li>
+    {% endfor %}
+</ul>
+{% else %}
+    <p>No transactions sent.</p>
+{% endif %}
+
+<h5>Transactions Received:</h5>
+{% if transactions_received %}
+    <ul>
+        {% for transaction in transactions_received %}
+            <li>At {{ transaction.timestamp }} Received {{ transaction.money_to_transfer }} {{ transaction.currency_symbol }} from {{ transaction.sender.username }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No transactions received.</p>
+{% endif %}
+
+<!--payment_requests_received-->
+{% if payment_requests_received %}
+    <ul>
+        {% for request in payment_requests_received %}
+            <li>
+                Request from {{ request.sender.username }}: {{ request.amount }} -
+                <a href="{% url 'respond_to_payment_request' request.id 'pay' %}">Pay</a> |
+                <a href="{% url 'respond_to_payment_request' request.id 'reject' %}">Reject</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No payment requests received.</p>
+{% endif %}
+
+<div class="container py-5">
+    {% block content %}
+        <!-- Child templates will override this block with their content -->
+    {% endblock %}
+</div>
+
+<!-- Bootstrap JS, including Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{% extends 'webapps2024/base.html' %}
+
+{% block title %}
+    Create a Payment Request
+{% endblock %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <h4>Create a Payment Request</h4>
+    <form method="post" class="form-group">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-success">Send Request</button>
+    </form>
+{% endblock %}

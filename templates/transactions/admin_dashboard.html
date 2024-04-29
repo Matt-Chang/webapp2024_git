@@ -1,0 +1,49 @@
+{% extends 'webapps2024/base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <h1>Admin Dashboard</h1>
+    <div>
+        <h2>User Accounts</h2>
+        <ul>
+            {% for user_profile in users %}
+                <li>{{ user_profile.name }} - {{ user_profile.formatted_points }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    
+    <h2>Payment Transactions</h2>
+    <ul>
+        {% for transaction in page_obj %}
+            <li>{{ transaction.timestamp }} || From {{ transaction.sender.username }} to {{ transaction.receiver.username }} - {{ transaction.points_to_transfer }} {{ transaction.currency_symbol }}</li>
+        {% endfor %}
+    </ul>
+
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+    
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+    
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">next</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+    
+    <div>
+        <h2>Add New Administrator</h2>
+        <form method="post" class="form-group">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-primary">Add Administrator</button>
+        </form>
+    </div>
+{% endblock %}
