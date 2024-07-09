@@ -1,3 +1,6 @@
+# Project Pipeline
+![Alt text](https://github.com/Matt-Chang/webapp2024_git/blob/main/Untitled%20diagram-2024-07-09-030557.png)
+
 1. **Project Planning and Design**
     - Conceptualized the online payment system with features like sending money, requesting money, and managing accounts.
     - Defined key functions such as virtual account management, initial funds and currency selection, user registration, direct payments, payment requests, transaction history, currency conversion, and security measures.
@@ -32,3 +35,5 @@
 8. **Cloud Deployment**
     - Successfully deployed the application on an Amazon EC2 virtual machine.
     - Provided screenshots and documentation of commands issued on the console to run the Django web application on the cloud.
+  
+
